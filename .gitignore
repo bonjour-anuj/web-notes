@@ -1,0 +1,9 @@
+# IDE Settings
+.idea/
+
+# Build Directory
+dist/
+
+# node dependencies
+node_modules/
+

@@ -1,0 +1,17 @@
+{
+  "name": "web-notes",
+  "version": "1.0.0",
+  "description": "annotate text, save clippings of a web page.",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-webpack-plugin": "^10.2.0",
+    "webpack": "^5.66.0",
+    "webpack-cli": "^4.9.1"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "name": "Web Notes",
+  "description": "annotate text, save clippings of a web page."
+}
