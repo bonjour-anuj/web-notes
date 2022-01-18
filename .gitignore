@@ -7,3 +7,4 @@ dist/
 # node dependencies
 node_modules/
 
+.scannerwork/
