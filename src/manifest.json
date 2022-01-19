@@ -2,5 +2,19 @@
   "version": "1.0.0",
   "manifest_version": 3,
   "name": "Web Notes",
-  "description": "annotate text, save clippings of a web page."
+  "description": "annotate text, save clippings of a web page.",
+  "background": {
+    "service_worker": "app.bundle.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*"
+      ],
+      "js": [
+        "init.bundle.js"
+      ]
+    }
+  ]
 }
