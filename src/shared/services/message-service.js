@@ -24,12 +24,14 @@ export class MessageService {
 
   /**
    * Sends message to background message listener.
-   * @param {Object} message to be sent to background listener
+   * @param {Object} payload to be sent to background listener
    * @param {function} callback to be called by background to send back the
    * response if any.
    */
-  sendMessageToApp = (message, callback) => {
-    chrome.runtime.sendMessage(new Message(message), callback);
+  sendToBackground = (payload, callback) => {
+    chrome.runtime.sendMessage(new Message(payload), (message) => {
+      callback(message['payload']);
+    });
   };
 
   /**
