@@ -19,7 +19,11 @@ export class AnnotationService {
   saveAnnotation = (pageURL, annotation) => {
     return new Promise((resolve, reject) => {
       this.messageService.sendToBackground(
-          {path: '/annotation.save', pageURL: pageURL, annotation: annotation},
+          {
+            requestPath: 'annotation.save',
+            pageURL: pageURL,
+            annotation: annotation,
+          },
           (response) => {
             resolve(response);
           });
@@ -35,7 +39,7 @@ export class AnnotationService {
   deleteAnnotation = (pageURL, annotationId) => {
     return new Promise(((resolve, reject) => {
       this.messageService.sendToBackground(
-          {path: '/annotation.delete', annotationId: annotationId},
+          {requestPath: 'annotation.delete', annotationId: annotationId},
           (response) => {
             resolve(response);
           });
@@ -50,7 +54,7 @@ export class AnnotationService {
   fetchAnnotations = (pageURL) => {
     return new Promise((resolve, reject) => {
       this.messageService.sendToBackground(
-          {path: '/annotation.get', pageURL: pageURL}, (response) => {
+          {requestPath: 'annotation.get', pageURL: pageURL}, (response) => {
             resolve(response);
           });
     });

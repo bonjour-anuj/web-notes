@@ -17,8 +17,10 @@ class Message {
 export class MessageService {
   /**
    * constructor
+   * @param {RequestHandler} requestHandler
    */
-  constructor() {
+  constructor(requestHandler) {
+    this.requestHandler = requestHandler;
     chrome.runtime.onMessage.addListener(this.onMessageListener);
   }
 
@@ -43,9 +45,15 @@ export class MessageService {
    */
   onMessageListener = (message, sender, sendResponse) => {
     console.dir(message);
-    if (sendResponse) {
-      sendResponse(new Message('OK'));
+    if (this.requestHandler) {
+      const promise = this.requestHandler.handleRequest(message['payload']);
+      if (sendResponse) {
+        promise.then((response) => {
+          sendResponse(new Message(response));
+        });
+      }
     }
+
     return true;
   };
 }

@@ -104,9 +104,12 @@ export class UIController {
         selection.text);
     Promise.all([
       this.render(annotation),
-      this.annotationService.saveAnnotation(page, annotation)]).finally(() => {
-      console.log('Annotation Saved');
-    });
+      this.annotationService.saveAnnotation(page, annotation)]).
+        then((response) => {
+          console.log(response);
+        }, (response) => {
+          console.log(response);
+        });
   };
 
   /**
