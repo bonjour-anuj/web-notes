@@ -1,4 +1,5 @@
 import {Annotation} from './annotation';
+import {xpathOf} from './xpath-helper';
 
 let selectionStarted = false;
 
@@ -36,7 +37,7 @@ export class UIController {
   onMouseUp = () => {
     if (selectionStarted) {
       selectionStarted = false;
-      this.processSelection(document.getSelection());
+      this.handleDomSelection(document.getSelection());
     }
   };
 
@@ -44,40 +45,70 @@ export class UIController {
    * Process html selection.
    * @param {Object} selection to be annotated.
    */
-  processSelection = (selection) => {
+  handleDomSelection = (selection) => {
     if (selection && selection.type !== 'Range') {
       return;
     }
-    const selectedNodes = {
-      startNode: selection['anchorNode'],
-      endNode: selection['focusNode'],
-      startOffset: selection['anchorOffset'],
-      endOffset: selection['focusOffset'],
-      textSelection: selection.toString(),
+    this.createAnnotationFromHTMLSelection(this.pageURL,
+        this.createSelection(selection));
+  };
+
+  /**
+   *
+   * @param {Object} selection
+   * @return {Object}
+   */
+  createSelection = (selection) => {
+    const range = selection.getRangeAt(0);
+    const selectedRange = {
+      text: range.toString(),
     };
-    this.createAnnotation(this.pageURL, selectedNodes);
+
+    if ((range.startContainer === range.endContainer && range.startOffset <
+            range.endOffset) ||
+        (range.startContainer.compareDocumentPosition(range.endContainer))) {
+      selectedRange['startNode'] = range.startContainer;
+      selectedRange['endNode'] = range.endContainer;
+      selectedRange['startOffset'] = range.startOffset;
+      selectedRange['endOffset'] = range.endOffset;
+    } else {
+      if (range.startContainer.compareDocumentPosition(range.endContainer) ===
+          Node.DOCUMENT_POSITION_PRECEDING) {
+        selectedRange['startNode'] = range.endContainer;
+        selectedRange['startOffset'] = range.endContainer.textContent.length -
+            range.endOffset + 1;
+        selectedRange['endNode'] = range.startContainer;
+        selectedRange['endOffset'] = range.startContainer.textContent.length -
+            range.startOffset;
+      } else {
+        selectedRange['startNode'] = range.endContainer;
+        selectedRange['startOffset'] = range.startContainer.textContent.length -
+            range.endOffset + 1;
+        selectedRange['endNode'] = range.startContainer.textContent.length -
+            range.startOffset;
+      }
+    }
+    return selectedRange;
   };
 
   /**
    * Add annotation to the text.
    * @param {string} page url.
-   * @param {Object} selectedNodes nodes to be highlighted and saved.
+   * @param {Object} selection nodes to be highlighted and saved.
    */
-  createAnnotation = (page, selectedNodes) => {
-    this.highlightTextSelection(selectedNodes);
+  createAnnotationFromHTMLSelection = (page, selection) => {
+    const annotation = new Annotation(xpathOf(selection.startNode),
+        selection.startOffset,
+        xpathOf(selection.endNode), selection.endOffset, selection.text);
+    this.render(annotation);
   };
 
   /**
-   * Highlight the text nodes.
-   * @param {Object} selectedNodes nodes to be highlighted and saved.
+   * Render
+   * @param {Object} uiView to be rendered
    */
-  highlightTextSelection = (selectedNodes) => {
-    const annotation = new Annotation(selectedNodes.startNode,
-        selectedNodes.endNode,
-        selectedNodes.startOffset,
-        selectedNodes.endOffset,
-        selectedNodes.textSelection);
-    annotation.render();
+  render = (uiView) => {
+    uiView.render();
   };
 
   /**
