@@ -43,7 +43,6 @@ export class MessageService {
    */
   onMessageListener = (message, sender, sendResponse) => {
     console.dir(message);
-    console.dir(sender);
     if (sendResponse) {
       sendResponse(new Message('OK'));
     }

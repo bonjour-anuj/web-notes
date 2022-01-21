@@ -9,9 +9,11 @@ let selectionStarted = false;
 export class UIController {
   /**
    * Constructor
+   * @param {AnnotationService} annotationService instance
    * @param {string} pageURL
    */
-  constructor(pageURL) {
+  constructor(annotationService, pageURL) {
+    this.annotationService = annotationService;
     this.pageURL = pageURL;
     this.setupListeners();
   }
@@ -98,17 +100,25 @@ export class UIController {
    */
   createAnnotationFromHTMLSelection = (page, selection) => {
     const annotation = new Annotation(xpathOf(selection.startNode),
-        selection.startOffset,
-        xpathOf(selection.endNode), selection.endOffset, selection.text);
-    this.render(annotation);
+        selection.startOffset, xpathOf(selection.endNode), selection.endOffset,
+        selection.text);
+    Promise.all([
+      this.render(annotation),
+      this.annotationService.saveAnnotation(page, annotation)]).finally(() => {
+      console.log('Annotation Saved');
+    });
   };
 
   /**
    * Render
    * @param {Object} uiView to be rendered
+   * @return {Promise} promise of the operation
    */
   render = (uiView) => {
-    uiView.render();
+    return new Promise(((resolve, reject) => {
+      uiView.render();
+      resolve(true);
+    }));
   };
 
   /**
