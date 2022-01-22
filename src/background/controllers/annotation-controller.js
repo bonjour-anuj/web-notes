@@ -1,4 +1,5 @@
 import {DataService} from '../data/data-service';
+import {ANNOTATIONS_MAPPING} from '../../shared/services/request-mappings';
 
 /**
  *
@@ -10,11 +11,13 @@ export class AnnotationController {
    */
   constructor(requestHandler) {
     this.db = new DataService();
-    requestHandler.subscribeRequestPath('annotation.save', this.handleRequest);
-    requestHandler.subscribeRequestPath('annotation.get', this.handleRequest);
-    requestHandler.subscribeRequestPath('annotation.deleteAnnotation',
+    requestHandler.subscribeRequestPath(ANNOTATIONS_MAPPING.SAVE,
         this.handleRequest);
-    requestHandler.subscribeRequestPath('annotation.deleteAll',
+    requestHandler.subscribeRequestPath(ANNOTATIONS_MAPPING.GET,
+        this.handleRequest);
+    requestHandler.subscribeRequestPath(ANNOTATIONS_MAPPING.DELETE,
+        this.handleRequest);
+    requestHandler.subscribeRequestPath(ANNOTATIONS_MAPPING.DELETE_ALL,
         this.handleRequest);
   }
 
@@ -64,14 +67,14 @@ export class AnnotationController {
   handleRequest = (...params) => {
     const request = params[0];
     switch (request['requestPath']) {
-      case 'annotation.save':
+      case ANNOTATIONS_MAPPING.SAVE:
         return this.saveAnnotation(request['pageURL'], request['annotation']);
-      case 'annotation.get':
+      case ANNOTATIONS_MAPPING.GET:
         return this.getAnnotations(request['pageURL']);
-      case 'annotation.deleteAnnotation':
+      case ANNOTATIONS_MAPPING.DELETE:
         return this.deleteAnnotation(request['pageURL'],
             request['annotationId']);
-      case 'annotation.deleteAll':
+      case ANNOTATIONS_MAPPING.DELETE_ALL:
         return this.deleteAll(request['pageURL']);
     }
   };

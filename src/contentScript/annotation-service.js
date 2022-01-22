@@ -1,3 +1,5 @@
+import {ANNOTATIONS_MAPPING} from '../shared/services/request-mappings';
+
 /**
  * Service to access annotations from background storage.
  */
@@ -20,7 +22,7 @@ export class AnnotationService {
     return new Promise((resolve, reject) => {
       this.messageService.sendToBackground(
           {
-            requestPath: 'annotation.save',
+            requestPath: ANNOTATIONS_MAPPING.SAVE,
             pageURL: pageURL,
             annotation: annotation,
           },
@@ -39,7 +41,22 @@ export class AnnotationService {
   deleteAnnotation = (pageURL, annotationId) => {
     return new Promise(((resolve, reject) => {
       this.messageService.sendToBackground(
-          {requestPath: 'annotation.delete', annotationId: annotationId},
+          {requestPath: ANNOTATIONS_MAPPING.DELETE, annotationId: annotationId},
+          (response) => {
+            resolve(response);
+          });
+    }));
+  };
+
+  /**
+   *
+   * @param {string} pageURL
+   * @return {Promise<unknown>}
+   */
+  deleteAllAnnotations = (pageURL) => {
+    return new Promise(((resolve, reject) => {
+      this.messageService.sendToBackground(
+          {requestPath: ANNOTATIONS_MAPPING.DELETE_ALL, pageURL: pageURL},
           (response) => {
             resolve(response);
           });
@@ -54,7 +71,8 @@ export class AnnotationService {
   fetchAnnotations = (pageURL) => {
     return new Promise((resolve, reject) => {
       this.messageService.sendToBackground(
-          {requestPath: 'annotation.get', pageURL: pageURL}, (response) => {
+          {requestPath: ANNOTATIONS_MAPPING.GET, pageURL: pageURL},
+          (response) => {
             resolve(response);
           });
     });
