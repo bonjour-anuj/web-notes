@@ -34,7 +34,9 @@ export class RequestHandler {
           }
         }
         const response = method.call(null, requestPayload);
-        resolve(response);
+        Promise.resolve(response).then(function(value) {
+          resolve(value);
+        });
       }
     }));
   };

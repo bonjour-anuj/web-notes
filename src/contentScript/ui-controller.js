@@ -1,5 +1,6 @@
 import {Annotation} from './annotation';
 import {xpathOf} from './xpath-helper';
+import $ from 'jquery';
 
 let selectionStarted = false;
 
@@ -128,6 +129,15 @@ export class UIController {
    * Load page annotations.
    */
   loadAnnotations = () => {
+    this.annotationService.fetchAnnotations(this.pageURL).
+        then((array) => {
+          $.each(array, function(i, a) {
+            const an = new Annotation(a.startNodePath, a.startOffset,
+                a.endNodePath,
+                a.endOffset, a.text);
+            an.render();
+          });
+        });
     console.log('Loading annotations for page @' + this.pageURL);
   };
 }
